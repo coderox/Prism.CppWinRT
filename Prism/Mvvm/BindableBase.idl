@@ -1,0 +1,10 @@
+namespace Prism.Mvvm
+{
+    [bindable]
+    [default_interface]
+    unsealed runtimeclass BindableBase : Windows.UI.Xaml.Data.INotifyPropertyChanged
+	{
+		BindableBase();
+		protected void RaisePropertyChanged(String propertyName);
+	}
+}

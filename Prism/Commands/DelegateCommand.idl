@@ -1,0 +1,16 @@
+namespace Prism.Commands
+{
+	delegate void ExecuteDelegate(Object parameter);
+	delegate Boolean CanExecuteDelegate(Object parameter);
+
+    [default_interface]
+	runtimeclass DelegateCommand : Windows.UI.Xaml.DependencyObject, Windows.UI.Xaml.Input.ICommand
+	{
+		DelegateCommand(ExecuteDelegate executeDelegate);
+		DelegateCommand(ExecuteDelegate executeDelegate, CanExecuteDelegate canExecuteDelegate);
+		void RaiseCanExecuteChanged();
+
+		void Execute();
+		Boolean CanExecute();
+	}
+}
