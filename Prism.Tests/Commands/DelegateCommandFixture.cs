@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
+using System.Windows.Input;
 
 namespace Prism.Tests.Commands
 {
@@ -248,7 +249,7 @@ namespace Prism.Tests.Commands
                 {
 
                     bool executed = false;
-                    var command = new DelegateCommand((o) => { executed = true; });
+                    var command = new DelegateCommand((_) => { executed = true; });
                     command.Execute();
 
                     Assert.IsTrue(executed);
@@ -264,7 +265,7 @@ namespace Prism.Tests.Commands
                 {
 
                     bool invoked = false;
-                    var command = new DelegateCommand((o) => { }, (o) => { invoked = true; return true; });
+                    var command = new DelegateCommand((_) => { }, (_) => { invoked = true; return true; });
 
                     bool canExecute = command.CanExecute();
 
@@ -280,56 +281,70 @@ namespace Prism.Tests.Commands
                 CoreDispatcherPriority.Normal,
                 () =>
                 {
-
-                    var command = new DelegateCommand((o) => { });
+                    var command = new DelegateCommand((_) => { });
                     Assert.IsTrue(command.CanExecute());
                 });
         }
 
-        //    [Fact]
-        //    public void NonGenericDelegateThrowsIfDelegatesAreNull()
-        //    {
-        //        Assert.Throws<ArgumentNullException>(() =>
+        [TestMethod]
+        public async Task NonGenericDelegateThrowsIfDelegatesAreNull()
+        {
+            await dispatcher.RunAsync(
+                CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    Assert.ThrowsException<ArgumentException>(() =>
+                    {
+                        var command = new DelegateCommand(null, null);
+                    });
+                });
+        }
+
+        [TestMethod]
+        public async Task NonGenericDelegateCommandThrowsIfExecuteDelegateIsNull()
+        {
+            await dispatcher.RunAsync(
+                CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    Assert.ThrowsException<ArgumentException>(() =>
+                    {
+                        var command = new DelegateCommand(null);
+                    });
+                });
+        }
+
+        [TestMethod]
+        public async Task NonGenericDelegateCommandThrowsIfCanExecuteDelegateIsNull()
+        {
+            await dispatcher.RunAsync(
+                CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    Assert.ThrowsException<ArgumentException>(() =>
+                        {
+                            var command = new DelegateCommand((_) => { }, null);
+                        });
+                });
+        }
+
+        //[TestMethod]
+        //public async Task NonGenericDelegateCommandShouldObserveCanExecute()
+        //{
+        //    await dispatcher.RunAsync(
+        //        CoreDispatcherPriority.Normal,
+        //        () =>
         //        {
-        //            var command = new DelegateCommand(null, null);
+        //            bool canExecuteChangedRaised = false;
+
+        //            ICommand command = new DelegateCommand((_) => { });
+
+        //            command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
+
+        //            Assert.IsFalse(canExecuteChangedRaised);
+        //            Assert.IsFalse(command.CanExecute(null));
         //        });
-        //    }
-
-        //    [Fact]
-        //    public void NonGenericDelegateCommandThrowsIfExecuteDelegateIsNull()
-        //    {
-        //        Assert.Throws<ArgumentNullException>(() =>
-        //        {
-        //            var command = new DelegateCommand(null);
-        //        });
-        //    }
-
-        //    [Fact]
-        //    public void NonGenericDelegateCommandThrowsIfCanExecuteDelegateIsNull()
-        //    {
-        //        Assert.Throws<ArgumentNullException>(() =>
-        //        {
-        //            var command = new DelegateCommand(() => { }, null);
-        //        });
-        //    }
-
-        //    [Fact]
-        //    public void NonGenericDelegateCommandShouldObserveCanExecute()
-        //    {
-        //        bool canExecuteChangedRaised = false;
-
-        //        ICommand command = new DelegateCommand(() => { }).ObservesCanExecute(() => BoolProperty);
-
-        //        command.CanExecuteChanged += delegate { canExecuteChangedRaised = true; };
-
-        //        Assert.False(canExecuteChangedRaised);
-        //        Assert.False(command.CanExecute(null));
-
-        //        BoolProperty = true;
-
-        //        Assert.True(canExecuteChangedRaised);
-        //        Assert.True(command.CanExecute(null));
-        //    }
+        //}
 
         //    [Fact]
         //    public void NonGenericDelegateCommandShouldObserveCanExecuteAndObserveOtherProperties()
