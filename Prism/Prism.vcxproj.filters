@@ -24,7 +24,6 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Mvvm\Mvvm.BindableBase.h" />
-    <ClInclude Include="Commands\DelegateCommand.h" />
     <ClInclude Include="Commands\Commands.DelegateCommand.h" />
   </ItemGroup>
   <ItemGroup>
